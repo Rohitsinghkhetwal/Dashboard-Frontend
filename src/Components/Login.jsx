@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {Link, useNavigate} from "react-router-dom";
-import Dashboard from "./Dashboard";
 
 const LoginForm = () => {
 
@@ -33,7 +32,7 @@ const LoginForm = () => {
         if(result.token){
             localStorage.setItem("users", JSON.stringify(result.user))
             localStorage.setItem("token", JSON.stringify(result.token))
-            navigate("Dashboard");
+            navigate("dashboard");
         }else {
             navigate("/");
         }

@@ -13,7 +13,8 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginForm />} />
         <Route path="/signup" element={<SignupForm />} />
-        <Route path="/Dashboard" element={<Dashboard/>} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/logout" element={<h1>User Logged Out Successfully !</h1>} />
       </Routes>
     </>
   );
