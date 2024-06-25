@@ -2,10 +2,15 @@ import { Link } from "react-router-dom";
  import { AiOutlineLogout } from "react-icons/ai";
  import { FaRegUserCircle } from "react-icons/fa";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 const Dashboard = () => {
+
+  
   const [users, setusers] = useState([]);
+  const navigate = useNavigate();
+
 
   const StoredUser = JSON.parse(localStorage.getItem("users"));
   const Token_ = JSON.parse(localStorage.getItem("token"));
@@ -15,21 +20,18 @@ const Dashboard = () => {
   const getAllUsers = async () => {
     try {
       let result = await fetch("http://localhost:7800/api/v1/users/getAll", {
-        method: "get",
+        method: "GET",
         headers: {
-          "Authorization": Token_,
+          "Authorization": Token_
         },
-      });
+    });
       result = await result.json();
+      console.log("this is result from getAll", result);
       setusers(result);
     } catch (err) {
       console.log("Something went wrong here !");
     }
   };
-  // deleting the user api
-  //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Njc0NDg0ZjhmMWYwYjdmZWY3MGQ2YzAiLCJpYXQiOjE3MTkxNDg5MjUsImV4cCI6MTcxOTMyMTcyNX0.gQpdVnQwGxFn9b4kit_MzASrVXXDEj2c_LGipPdqeXw
-
-  //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Njc0NDg0ZjhmMWYwYjdmZWY3MGQ2YzAiLCJpYXQiOjE3MTkxNDg5MjUsImV4cCI6MTcxOTMyMTcyNX0.gQpdVnQwGxFn9b4kit_MzASrVXXDEj2c_LGipPdqeXw
 
   const DeleteUser = async (id) => {
     try {
@@ -50,13 +52,33 @@ const Dashboard = () => {
 
       deleting = await deleting.json();
       console.log("deleted successfully _");
+      getAllUsers();
     } catch (err) {
       console.log("Something went wrong while deleting.......");
     }
   };
 
-  const Logout = () => {
-    console.log("Logged out successfully !");
+  const Logout = async() => {
+    try{
+      let result = await fetch("http://localhost:7800/api/v1/users/logout",{
+        method: "POST",
+        headers: {
+          "Authorization": Token_
+        }
+      });
+      result = await result.json();
+      localStorage.clear();
+      navigate("/")
+
+
+    }catch(err){
+      console.log("SOmething went wrong !", err);
+
+    }
+  }
+
+  const UpdateUser = () => {
+    navigate(`/dashboard/updateProducts${params._id}`)
   }
   useEffect(() => {
     getAllUsers();
@@ -72,6 +94,14 @@ const Dashboard = () => {
                 Em-Dash
               </Link>
             </div>
+
+            <div className="flex items-center justify-center text-center">
+              <Link to="/dashboard/createUser">
+                <button className="font-semibold bg-green-200 p-2 rounded">
+                  Create User
+                </button>
+              </Link>
+            </div>
             <div className="hidden md:flex items-center space-x-4">
               <FaRegUserCircle className="h-[50px] w-[30px]" />
               {Token_ && (
@@ -80,7 +110,7 @@ const Dashboard = () => {
                 </div>
               )}
               <Link
-                to="/logout"
+                to="/"
                 className="px-4 py-1 rounded-md font-medium pl-[70px]"
               >
                 <AiOutlineLogout
@@ -127,28 +157,29 @@ const Dashboard = () => {
                 </th>
               </tr>
             </thead>
+
             <tbody className="block md:table-row-group">
               {users.map((user, index) => (
                 <tr
                   key={index}
                   className="bg-white border border-gray-300 block md:table-row"
                 >
-                  <td className="p-2 md:border md:border-gray-300 text-left block md:table-cell">
+                  <td className="p-2 md:border md:border-gray-300 text-left block md:table-cell text-slate-500 font-bold">
                     {user.name}
                   </td>
-                  <td className="p-2 md:border md:border-gray-300 text-left block md:table-cell">
+                  <td className="p-2 md:border md:border-gray-300 text-left block md:table-cell text-slate-500 font-bold">
                     {user.email}
                   </td>
-                  <td className="p-2 md:border md:border-gray-300 text-left block md:table-cell">
+                  <td className="p-2 md:border md:border-gray-300 text-left block md:table-cell text-slate-500 font-bold">
                     {user.mobile}
                   </td>
-                  <td className="p-2 md:border md:border-gray-300 text-left block md:table-cell">
+                  <td className="p-2 md:border md:border-gray-300 text-left block md:table-cell text-slate-500 font-bold">
                     {user.designation}
                   </td>
-                  <td className="p-2 md:border md:border-gray-300 text-left block md:table-cell">
+                  <td className="p-2 md:border md:border-gray-300 text-left block md:table-cell text-slate-500 font-bold">
                     {user.gender}
                   </td>
-                  <td className="p-2 md:border md:border-gray-300 text-left block md:table-cell">
+                  <td className="p-2 md:border md:border-gray-300 text-left block md:table-cell text-slate-500 font-bold">
                     {user.course}
                   </td>
                   <td className="p-2 md:border md:border-gray-300 text-left block md:table-cell">
@@ -160,14 +191,16 @@ const Dashboard = () => {
                   </td>
                   <td className=" md:border md:border-gray-300 block md:table-cell">
                     <button
-                      className="bg-red-300 px-2 rounded mx-2"
+                      className="bg-red-300 px-2 rounded mx-2 text-slate-500 font-bold"
                       onClick={() => DeleteUser(user._id)}
                     >
                       Delete
                     </button>
-                    <button className="bg-black text-white px-2 rounded">
-                      Update
-                    </button>
+                    <Link to="/dashboard/updateProducts">
+                      <button className="bg-black text-white px-2 rounded font-bold" onClick={() => UpdateUser(user._id)}>
+                        Update
+                      </button>
+                    </Link>
                   </td>
                 </tr>
               ))}
