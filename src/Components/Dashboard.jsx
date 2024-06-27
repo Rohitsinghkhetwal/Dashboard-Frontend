@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
  import { FaRegUserCircle } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 
 const Dashboard = () => {
@@ -30,8 +31,10 @@ const Dashboard = () => {
       result = await result.json();
       console.log("this is result from getAll", result);
       setusers(result);
+      toast.success("All Users")
     } catch (err) {
       console.log("Something went wrong here !");
+      toast.error("User not found !")
     }
   };
 
@@ -55,8 +58,10 @@ const Dashboard = () => {
       deleting = await deleting.json();
       console.log("deleted successfully _");
       getAllUsers();
+      toast.success("User Deleted Successfully !")
     } catch (err) {
       console.log("Something went wrong while deleting.......");
+      toast.error("User not deleted !")
     }
   };
 
@@ -71,6 +76,7 @@ const Dashboard = () => {
       result = await result.json();
       localStorage.clear();
       navigate("/")
+      toast.success("User Logged out Success !")
 
 
     }catch(err){
@@ -79,9 +85,11 @@ const Dashboard = () => {
     }
   }
 
-  const UpdateUser = () => {
-    navigate(`/dashboard/updateProducts${params._id}`)
+  const UpdateUser = (id) => {
+    navigate(`/dashboard/updateProducts/${id}`)
   }
+
+  
 
   useEffect(() => {
     getAllUsers();
@@ -211,11 +219,11 @@ const Dashboard = () => {
                     >
                       Delete
                     </button>
-                    <Link to="/dashboard/updateProducts">
+                    
                       <button className="bg-black text-white px-2 rounded font-bold" onClick={() => UpdateUser(user._id)}>
                         Update
                       </button>
-                    </Link>
+                    
                   </td>
                 </tr>
               ))}
