@@ -9,6 +9,8 @@ const Dashboard = () => {
 
   
   const [users, setusers] = useState([]);
+  const [search, setSearch] = useState("");
+  console.log("this the user that search here !", search);
   const navigate = useNavigate();
 
 
@@ -80,10 +82,14 @@ const Dashboard = () => {
   const UpdateUser = () => {
     navigate(`/dashboard/updateProducts${params._id}`)
   }
+
   useEffect(() => {
     getAllUsers();
   }, []);
 
+
+  const filteredUser = users.filter(user => user.name.toLowerCase().includes(search.toLowerCase()));
+  console.log("this is filtered data", filteredUser)
   return (
     <div className="flex flex-col">
       <nav className="bg-slate-300 shadow-md">
@@ -101,6 +107,15 @@ const Dashboard = () => {
                   Create User
                 </button>
               </Link>
+            </div>
+            <div className="flex justify-center items-center">
+              <input
+              placeholder="search by name"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="px-4 py-2 bg-slate-200 rounded-md "
+              />
+
             </div>
             <div className="hidden md:flex items-center space-x-4">
               <FaRegUserCircle className="h-[50px] w-[30px]" />
@@ -159,7 +174,7 @@ const Dashboard = () => {
             </thead>
 
             <tbody className="block md:table-row-group">
-              {users.map((user, index) => (
+              {filteredUser.map((user, index) => (
                 <tr
                   key={index}
                   className="bg-white border border-gray-300 block md:table-row"
